@@ -1,0 +1,12 @@
+#!/bin/bash
+
+swift-auth-recreate-accounts -K devauth
+swift-init object-updater start
+swift-init container-updater start
+swift-init object-replicator start
+swift-init container-replicator start
+swift-init account-replicator start
+swift-init object-auditor start
+swift-init container-auditor start
+swift-init account-auditor start
+swift-init account-reaper start

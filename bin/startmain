@@ -1,0 +1,7 @@
+#! /bin/bash
+
+swift-init auth-server start
+swift-init proxy-server start
+swift-init account-server start
+swift-init container-server start
+swift-init object-server start

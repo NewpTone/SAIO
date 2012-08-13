@@ -1,0 +1,69 @@
+#/bin/bash
+
+
+#install indepency
+sudo apt-get install python-software-properties
+sudo add-apt-repository ppa:swift-core/release
+#sudo apt-get update
+sudo apt-get install curl gcc git-core memcached python-configobj python-coverage python-dev python-nose python-setuptools python-simplejson python-xattr sqlite3 xfsprogs python-webob python-eventlet python-greenlet python-pastedeploy python-netifaces
+
+
+#Add swift user
+sudo useradd -d /home/swift -s /bin/bash -U swift 
+sudo password swift
+#setup xfs for disk
+sudo apt-get install vsftpd 
+
+sudo dd if=/dev/zero of=/srv/swift-disk bs=1024 count=0 seek=1000000
+sudo mkfs.xfs -i size=1024 /srv/swift-disk
+sudo echo "/srv/swift-disk /mnt/sdb1 xfs loop,noatime,nodiratime,nobarrier,logbufs=8 0 0" >> /etc/fstab
+sudo mkdir /mnt/sdb1
+sudo mount /mnt/sdb1
+sudo mkdir /mnt/sdb1/1 /mnt/sdb1/2 /mnt/sdb1/3 /mnt/sdb1/4 /mnt/sdb1/test
+sudo chown -R swift:swift /mnt/sdb1/*
+sudo mkdir /srv 
+
+for x in 1 2 3 4 
+do
+  sudo  ln -s /mnt/sdb1/$x /srv/$X
+done
+
+sudo mkdir -p /etc/swift/object-server /etc/swift/container-server /etc/swift/account-server
+
+for x in 1 2 3 4 
+do
+  sudo mkdir -p /srv/$x/node/sdb$x
+done
+
+sudo mkdir -p /var/run/swift
+sudo  chown -R swift:swift /etc/swift /srv/1/ /srv/2/ /srv/3/ /srv/4/ /var/run/swift
+
+sudo echo -e "mkdir /var/run/swift \\n chown swift:swift /var/run/swift" >> /etc/rc.local  
+
+
+sudo echo -e "export SWIFT_TEST_CONFIG_FILE=/etc/swift/test.conf  \\n export PATH=${PATH}:~/bin" >> /home/swift/.bashrc 
+sudo source ~/.bashrc
+
+
+#configure conf
+
+sudo mkdir /etc/swift
+chown swift:swift /etc/swift
+cp –r conf/* /etc/swift/
+cp -r conf/account-server object-server proxy-server  /etc/swift
+
+cp rsyncd.conf /etc
+sudo service rsync restart
+
+
+#Install swift
+git clone git://github.com/openstack/swift.git
+cd swift;sudo python setup.py develop;cd ..
+
+#Install swiftclient
+git clone https://github.com/openstack/python-swiftclient.git
+cd python-swiftclient; sudo python setup.py develop;cd ..
+
+cd bin;sh remakerings
+echo "SAIO is Finished......."
+
