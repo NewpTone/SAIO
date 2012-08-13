@@ -59,13 +59,12 @@ sudo echo -e "export SWIFT_TEST_CONFIG_FILE=/etc/swift/test.conf  \\n export PAT
 sudo source ~/.bashrc
 
 
-#configure conf
+#configure swift and related conf
 
 sudo mkdir /etc/swift
 chown swift:swift /etc/swift
 cp –r conf/* /etc/swift/
 cp -r conf/account-server object-server proxy-server  /etc/swift
-
 cp rsyncd.conf /etc
 sudo service rsync restart
 
