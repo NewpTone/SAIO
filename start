@@ -74,7 +74,7 @@ fi
 chown swift:swift /etc/swift
 
 # copy conf files 
-cp --recursive conf/ /etc/swift/
+cp --recursive conf/* /etc/swift/
 cp rsyncd.conf /etc
 sudo service rsync restart
 
