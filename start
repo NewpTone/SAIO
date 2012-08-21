@@ -36,7 +36,11 @@ sudo mkdir /mnt/sdb1
 sudo mount /mnt/sdb1
 sudo mkdir /mnt/sdb1/1 /mnt/sdb1/2 /mnt/sdb1/3 /mnt/sdb1/4 /mnt/sdb1/test
 sudo chown -R swift:swift /mnt/sdb1/*
-sudo mkdir /srv 
+
+if [ -e /srv ]
+then 
+    sudo mkdir /srv 
+fi
 
 for x in 1 2 3 4 
 do
@@ -55,17 +59,17 @@ sudo  chown -R swift:swift /etc/swift /srv/1/ /srv/2/ /srv/3/ /srv/4/ /var/run/s
 
 sudo echo -e "mkdir /var/run/swift \\n chown swift:swift /var/run/swift" >> /etc/rc.local  
 
-
-sudo echo -e "export SWIFT_TEST_CONFIG_FILE=/etc/swift/test.conf  \\n export PATH=${PATH}:~/bin" >> /home/swift/.bashrc 
-sudo source ~/.bashrc
+if [ -e /home/swift/.bashrc ]
+then 
+   sudo echo -e "export SWIFT_TEST_CONFIG_FILE=/etc/swift/test.conf  \\n export PATH=${PATH}:~/bin" >> /home/swift/.bashrc 
+   sudo source ~/.bashrc
+fi
 
 
 #configure swift and related conf
-
 sudo mkdir /etc/swift
 chown swift:swift /etc/swift
-cp –R conf/* /etc/swift/
-cp -R conf/account-server object-server proxy-server  /etc/swift
+cp --recursive conf/ /etc/swift/
 cp rsyncd.conf /etc
 sudo service rsync restart
 
@@ -78,7 +82,9 @@ cd swift;sudo python setup.py install;cd ..
 git clone https://github.com/openstack/python-swiftclient.git
 cd python-swiftclient; sudo python setup.py install;cd ..
 
+#make ring and start server
 cd bin;sh remakerings
 swift-init main start
+
 echo "Hi, SAIO is Finished......."
 
