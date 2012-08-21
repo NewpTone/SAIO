@@ -37,7 +37,7 @@ sudo mount /mnt/sdb1
 sudo mkdir /mnt/sdb1/1 /mnt/sdb1/2 /mnt/sdb1/3 /mnt/sdb1/4 /mnt/sdb1/test
 sudo chown -R swift:swift /mnt/sdb1/*
 
-if [ -e /srv ]
+if ! [ -e /srv ]
 then 
     sudo mkdir /srv 
 fi
@@ -67,8 +67,13 @@ fi
 
 
 #configure swift and related conf
-sudo mkdir /etc/swift
+if ! [ -e /etc/swift ]
+then
+    sudo mkdir /etc/swift
+fi
 chown swift:swift /etc/swift
+
+# copy conf files 
 cp --recursive conf/ /etc/swift/
 cp rsyncd.conf /etc
 sudo service rsync restart
