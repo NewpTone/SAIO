@@ -78,14 +78,19 @@ cp --recursive conf/* /etc/swift/
 cp rsyncd.conf /etc
 sudo service rsync restart
 
+#some system need easy_install and pip
+apt-get -y install python-setuptools
+easy_install pip
 
 #Install swift
 git clone git://github.com/openstack/swift.git
-cd swift;sudo python setup.py install;cd ..
+cd swift ; pip install -r tools/pip-requires
+sudo python setup.py install; cd ..
 
 #Install swiftclient
 git clone https://github.com/openstack/python-swiftclient.git
-cd python-swiftclient; sudo python setup.py install;cd ..
+cd python-swiftclient; pip install -r tools/pip-requires
+ sudo python setup.py install;cd ..
 
 #make ring and start server
 cd bin;sh remakerings
